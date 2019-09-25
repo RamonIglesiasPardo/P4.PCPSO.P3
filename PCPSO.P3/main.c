@@ -21,16 +21,8 @@ int main()
 			//Introducido caracter de fuga. Se cierra la aplicación.
 			break;
 		case 1:
-			printf("\nEjecutando opcion \"archivo: Mostrar Contenidos.\"\n");
-			mostrarContenidoArchivo();
-			break;
-		case 2:
-			printf("\nEjecutando opcion \"archivo: Guardar como...\"\n");
-			guardarComoArchivo();
-			break;
-		case 3:
-			printf("\nEjecutando opcion \"archivo: Buscar cadena de caracteres.\"\n");
-			buscarCadenaCaracteres();
+			printf("\nEjecutando opcion \"Edicion archivo Hosts.\"\n");
+			editarArchivoHosts();
 			break;
 		default:
 			printf("\nOPCION NO VALIDA.\nSELECCIONE UNA OPCION DENTRO DEL RANGO OFRECIDO.");
