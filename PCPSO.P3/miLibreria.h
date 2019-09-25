@@ -4,6 +4,8 @@
 void mostrarMenuInicial();
 char solicitarRutaArchivo(char *rutaArchivo);
 FILE *inicializarPunteroArchivo(char *rutaArchivo, char *modo);
+
+void editarArchivoHosts();
 void mostrarContenidoArchivo();
 void guardarComoArchivo();
 void buscarCadenaCaracteres();

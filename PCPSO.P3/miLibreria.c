@@ -4,9 +4,7 @@ void mostrarMenuInicial() {
 	printf("############################ MENU INICIAL #############################\n");
 	printf("#######################################################################\n\n");
 	printf("Por favor, seleccione una de las siguientes opciones:\n\n");
-	printf("1) Archivo: Mostrar contenidos.\n");
-	printf("2) Archivo: Guardar como...\n");
-	printf("3) Archivo: Buscar cadena de caracteres.\n\n");
+	printf("1) Edicion archivo Hosts.\n");
 	printf("0) Salir\n\n");
 	printf("Opcion seleccionada: ");
 
@@ -43,6 +41,12 @@ FILE *inicializarPunteroArchivo(char *rutaArchivo, char *modo)
 		//Hemos tenido éxito. Devolvemos el puntero FILE con los detalles del stream incializado.
 		return archivoProcesado;
 	}
+}
+
+void editarArchivoHosts() {
+
+
+
 }
 
 void mostrarContenidoArchivo() {
