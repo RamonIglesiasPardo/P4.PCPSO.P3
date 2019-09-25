@@ -3,6 +3,7 @@
 
 void mostrarMenuInicial();
 char solicitarRutaArchivo(char *rutaArchivo);
+char solicitarRutaArchivoHostsSistema(char *rutaArchivo);
 FILE *inicializarPunteroArchivo(char *rutaArchivo, char *modo);
 
 void editarArchivoHosts();
