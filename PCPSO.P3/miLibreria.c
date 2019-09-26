@@ -26,25 +26,26 @@ char solicitarRutaArchivoHostsSistema(char *rutaArchivo) {
 
 	int rutaPorDefecto;
 	
-	printf("\nDesea utilizar la ruta por defecto para acceder al archivo Hosts del sistema?\n");
+	printf("Por favor, seleccione una de las siguientes opciones:\n\n");
 	printf("1) Utilizar ruta por defecto.\n");
 	printf("2) Indicar ruta manualmente.\n");
 	printf("Opcion seleccionada: ");
 	//Quizá aquí sería mejor usar fgets. Podriamos controlar la asignación de memoria y permitiria el uso de espacios en la dirección introducida.
-	scanf("%d", &rutaPorDefecto);
+	scanf(" %d", &rutaPorDefecto);
+	printf("\n%d\n", rutaPorDefecto);
 
-	while (rutaPorDefecto != 1 || rutaPorDefecto != 2) {
+	while (rutaPorDefecto != 1 && rutaPorDefecto != 2) {
 
 		printf("\nOPCION NO VALIDA.\n\n");
 		printf("\nDesea utilizar la ruta por defecto para acceder al archivo Hosts del sistema?\n");
 		printf("1) Utilizar ruta por defecto.\n");
 		printf("2) Indicar ruta manualmente.\n");
 		printf("Opcion seleccionada: ");
-		scanf("%d", &rutaPorDefecto);
+		scanf(" %d", &rutaPorDefecto);
 
 	}
 
-	if (rutaPorDefecto == "S") {
+	if (rutaPorDefecto == 1) {
 
 		printf("\nIF RUTA POR DEFECTO\n");
 
@@ -54,6 +55,7 @@ char solicitarRutaArchivoHostsSistema(char *rutaArchivo) {
 		printf("\nIF RUTA MANUAL\n");
 	}
 
+	getch();
 
 	return &rutaArchivo;
 }
