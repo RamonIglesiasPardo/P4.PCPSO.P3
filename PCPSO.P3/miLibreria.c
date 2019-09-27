@@ -24,37 +24,34 @@ char solicitarRutaArchivo(char *rutaArchivo) {
 
 char solicitarRutaArchivoHostsSistema(char *rutaArchivo) {
 
-	int rutaPorDefecto;
+	int opcionSeleccionada;
 	
 	printf("Por favor, seleccione una de las siguientes opciones:\n\n");
 	printf("1) Utilizar ruta por defecto.\n");
 	printf("2) Indicar ruta manualmente.\n");
 	printf("\nOpcion seleccionada: ");
 	//Quizá aquí sería mejor usar fgets. Podriamos controlar la asignación de memoria y permitiria el uso de espacios en la dirección introducida.
-	scanf(" %d", &rutaPorDefecto);
-	printf("\n%d\n", rutaPorDefecto);
+	scanf(" %d", &opcionSeleccionada);
 
-	while (rutaPorDefecto != 1 && rutaPorDefecto != 2) {
+	while (opcionSeleccionada != 1 && opcionSeleccionada != 2) {
 
 		printf("\nOPCION NO VALIDA.\n\n");
 		printf("Por favor, seleccione una de las siguientes opciones:\n\n");
 		printf("1) Utilizar ruta por defecto.\n");
 		printf("2) Indicar ruta manualmente.\n");
 		printf("\nOpcion seleccionada: ");
-		scanf(" %d", &rutaPorDefecto);
+		scanf(" %d", &opcionSeleccionada);
 
 	}
 
-	if (rutaPorDefecto == 1) {
+	if (opcionSeleccionada == 1) {
 
-		rutaArchivo = RUTA_POR_DEFECTO_HOST_SISTEMA;
+		strcpy(rutaArchivo, RUTA_POR_DEFECTO_HOST_SISTEMA) ;
 
-
-	}
+	} 
 	else {
 
 		solicitarRutaArchivo(rutaArchivo);
-
 	}
 	
 	return &rutaArchivo;
@@ -86,11 +83,10 @@ void editarArchivoHosts() {
 	char rutaArchivoHostsSistema[MAX_CHAR_RUTA_ARCHIVO], rutaArchivoHostsProporcionado[MAX_CHAR_RUTA_ARCHIVO], rutaArchivoTemp[MAX_CHAR_RUTA_ARCHIVO];
 	//Declaramos los puntero tipo FILE para los archivos que procesaremos.
 	FILE *archivoHostsSistema, *archivoHostsProporcionado, *archivoTemp;
-	
-	
+		
 	//Solicitamos al usuario que introduzca la ruta del archivo Hosts del Sistema.
 	solicitarRutaArchivoHostsSistema(rutaArchivoHostsSistema);
-	archivoHostsSistema = inicializarPunteroArchivo(&rutaArchivoHostsSistema, "wt");
+	archivoHostsSistema = inicializarPunteroArchivo(rutaArchivoHostsSistema, "wt");
 	mostrarContenidoArchivo(archivoHostsSistema);
 
 	

@@ -1,6 +1,6 @@
 #define MAX_CHAR_RUTA_ARCHIVO 50
 #define MAX_CHAR_CADENA 50
-#define RUTA_POR_DEFECTO_HOST_SISTEMA "..hosts" //"%windir%\system32\drivers\etc\hosts"
+#define RUTA_POR_DEFECTO_HOST_SISTEMA "%windir%/\system32/\drivers/\etc/\hosts"
 
 void mostrarMenuInicial();
 char solicitarRutaArchivo(char *rutaArchivo);
