@@ -29,7 +29,7 @@ char solicitarRutaArchivoHostsSistema(char *rutaArchivo) {
 	printf("Por favor, seleccione una de las siguientes opciones:\n\n");
 	printf("1) Utilizar ruta por defecto.\n");
 	printf("2) Indicar ruta manualmente.\n");
-	printf("Opcion seleccionada: ");
+	printf("\nOpcion seleccionada: ");
 	//Quizá aquí sería mejor usar fgets. Podriamos controlar la asignación de memoria y permitiria el uso de espacios en la dirección introducida.
 	scanf(" %d", &rutaPorDefecto);
 	printf("\n%d\n", rutaPorDefecto);
@@ -37,26 +37,26 @@ char solicitarRutaArchivoHostsSistema(char *rutaArchivo) {
 	while (rutaPorDefecto != 1 && rutaPorDefecto != 2) {
 
 		printf("\nOPCION NO VALIDA.\n\n");
-		printf("\nDesea utilizar la ruta por defecto para acceder al archivo Hosts del sistema?\n");
+		printf("Por favor, seleccione una de las siguientes opciones:\n\n");
 		printf("1) Utilizar ruta por defecto.\n");
 		printf("2) Indicar ruta manualmente.\n");
-		printf("Opcion seleccionada: ");
+		printf("\nOpcion seleccionada: ");
 		scanf(" %d", &rutaPorDefecto);
 
 	}
 
 	if (rutaPorDefecto == 1) {
 
-		printf("\nIF RUTA POR DEFECTO\n");
+		rutaArchivo = RUTA_POR_DEFECTO_HOST_SISTEMA;
+
 
 	}
 	else {
 
-		printf("\nIF RUTA MANUAL\n");
+		solicitarRutaArchivo(rutaArchivo);
+
 	}
-
-	getch();
-
+	
 	return &rutaArchivo;
 }
 
@@ -90,10 +90,14 @@ void editarArchivoHosts() {
 	
 	//Solicitamos al usuario que introduzca la ruta del archivo Hosts del Sistema.
 	solicitarRutaArchivoHostsSistema(rutaArchivoHostsSistema);
+	archivoHostsSistema = inicializarPunteroArchivo(&rutaArchivoHostsSistema, "wt");
+	mostrarContenidoArchivo(archivoHostsSistema);
+
 	
-	
+	getch();
+
 	//Inicializamos y validamos el puntero FILE. 
-	archivoHostsSistema = inicializarPunteroArchivo(&rutaArchivoHostsSistema, "rt");
+	
 
 
 	//Hemos llegado al EOF. Cerramos el archivo para liberar recursos
