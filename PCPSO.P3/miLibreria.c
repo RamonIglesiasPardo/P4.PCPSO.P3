@@ -22,6 +22,44 @@ char solicitarRutaArchivo(char *rutaArchivo) {
 	return &rutaArchivo;
 }
 
+char solicitarRutaArchivoHostsSistema(char *rutaArchivo) {
+
+	int rutaPorDefecto;
+	
+	printf("Por favor, seleccione una de las siguientes opciones:\n\n");
+	printf("1) Utilizar ruta por defecto.\n");
+	printf("2) Indicar ruta manualmente.\n");
+	printf("\nOpcion seleccionada: ");
+	//Quizá aquí sería mejor usar fgets. Podriamos controlar la asignación de memoria y permitiria el uso de espacios en la dirección introducida.
+	scanf(" %d", &rutaPorDefecto);
+	printf("\n%d\n", rutaPorDefecto);
+
+	while (rutaPorDefecto != 1 && rutaPorDefecto != 2) {
+
+		printf("\nOPCION NO VALIDA.\n\n");
+		printf("Por favor, seleccione una de las siguientes opciones:\n\n");
+		printf("1) Utilizar ruta por defecto.\n");
+		printf("2) Indicar ruta manualmente.\n");
+		printf("\nOpcion seleccionada: ");
+		scanf(" %d", &rutaPorDefecto);
+
+	}
+
+	if (rutaPorDefecto == 1) {
+
+		rutaArchivo = RUTA_POR_DEFECTO_HOST_SISTEMA;
+
+
+	}
+	else {
+
+		solicitarRutaArchivo(rutaArchivo);
+
+	}
+	
+	return &rutaArchivo;
+}
+
 FILE *inicializarPunteroArchivo(char *rutaArchivo, char *modo)
 {
 	FILE *archivoProcesado;
@@ -44,24 +82,33 @@ FILE *inicializarPunteroArchivo(char *rutaArchivo, char *modo)
 }
 
 void editarArchivoHosts() {
+	//Declaramos las variables que albergarán la dirección de los archivos a procesar.
+	char rutaArchivoHostsSistema[MAX_CHAR_RUTA_ARCHIVO], rutaArchivoHostsProporcionado[MAX_CHAR_RUTA_ARCHIVO], rutaArchivoTemp[MAX_CHAR_RUTA_ARCHIVO];
+	//Declaramos los puntero tipo FILE para los archivos que procesaremos.
+	FILE *archivoHostsSistema, *archivoHostsProporcionado, *archivoTemp;
+	
+	
+	//Solicitamos al usuario que introduzca la ruta del archivo Hosts del Sistema.
+	solicitarRutaArchivoHostsSistema(rutaArchivoHostsSistema);
+	archivoHostsSistema = inicializarPunteroArchivo(&rutaArchivoHostsSistema, "wt");
+	mostrarContenidoArchivo(archivoHostsSistema);
+
+	
+	getch();
+
+	//Inicializamos y validamos el puntero FILE. 
+	
 
 
+	//Hemos llegado al EOF. Cerramos el archivo para liberar recursos
+	fclose(archivoHostsSistema);
 
 }
 
-void mostrarContenidoArchivo() {
+void mostrarContenidoArchivo(FILE *archivoA) {
 	
-	//Declaramos el contenedor para albergar el dirección del archivo a procesar.
-	char rutaArchivo[MAX_CHAR_RUTA_ARCHIVO];
-	//Declaramos el puntero tipo FILE para el archivo que procesaremos.
-	FILE *archivoA;
-	//Declaramos el contenedor para albergar el resultado de cada lectura. 
+	//Declaramos la variable para albergar el resultado de cada lectura del flujo. 
 	char caracter;
-
-	//Solicitamos al usuario que introduzca la ruta del archivo.
-	solicitarRutaArchivo(rutaArchivo);
-	//Inicializamos y validamos el puntero FILE. 
-	archivoA = inicializarPunteroArchivo(&rutaArchivo, "rt");
 
 	printf("\n#######################################################################\n");
 	printf("######################### MOSTRANDO CONTENIDOS ########################\n");
@@ -76,8 +123,8 @@ void mostrarContenidoArchivo() {
 		printf("%c", caracter);
 	}
 
-	//Hemos llegado al EOF. Cerramos el archivo para liberar recursos
-	fclose(archivoA);
+	//Devolvemos el apuntador al principio del archivo.
+	rewind(archivoA);
 	
 }
 
