@@ -86,7 +86,7 @@ void editarArchivoHosts() {
 		
 	//Solicitamos al usuario que introduzca la ruta del archivo Hosts del Sistema.
 	solicitarRutaArchivoHostsSistema(rutaArchivoHostsSistema);
-	archivoHostsSistema = inicializarPunteroArchivo(rutaArchivoHostsSistema, "wt");
+	archivoHostsSistema = inicializarPunteroArchivo(rutaArchivoHostsSistema, "r+");
 	mostrarContenidoArchivo(archivoHostsSistema);
 
 	
@@ -119,6 +119,10 @@ void mostrarContenidoArchivo(FILE *archivoA) {
 		printf("%c", caracter);
 	}
 
+	printf("\n#######################################################################\n");
+	printf("############################## FIN ARCHIVO ############################\n");
+	printf("#######################################################################\n\n");
+
 	//Devolvemos el apuntador al principio del archivo.
 	rewind(archivoA);
 	
@@ -145,7 +149,7 @@ void guardarComoArchivo() {
 	//Solicitamos al usuario que introduzca la ruta del archivo de destino.
 	solicitarRutaArchivo(rutaArchivoDestino);
 	//Inicializamos y validamos el puntero FILE. 
-	archivoDestino = inicializarPunteroArchivo(&rutaArchivoDestino, "wt");
+	archivoDestino = inicializarPunteroArchivo(&rutaArchivoDestino, "w");
 		
 	//Declaramos el contenedor para albergar el resultado de cada lectura. 
 	char caracter;
