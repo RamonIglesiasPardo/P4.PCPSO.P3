@@ -1,19 +1,20 @@
 char solicitarRutaArchivo(char *rutaArchivo) {
 
 	infoUsrSolicitarRutaManual();
-	//Quizá aquí sería mejor usar fgets. Podriamos controlar la asignación de memoria y permitiria el uso de espacios en la dirección introducida.
-	scanf("%s", rutaArchivo);
+	//Quizá aquí sería mejor usar fgets. Podriamos controlar la asignación de memoria y filtrar mejor la entrada del usuario.
+	scanf(" %s", rutaArchivo);
 
-	return &rutaArchivo;
+	return rutaArchivo;
+
 }
-
+//Mediante un menu da la posibilidad de utilizar una ruta por defecto para alcanzar el archvio Hosts del SO.
 char solicitarRutaArchivoHostsSistema(char *rutaArchivo) {
 
 	int opcionSeleccionada;	
 	infoUsrUsarRutaDefault();
 
 	//Quizá aquí sería mejor usar fgets. Podriamos controlar la asignación de memoria y permitiria el uso de espacios en la dirección introducida.
-	opcionSeleccionada = 1; // scanf(" %d", &opcionSeleccionada);
+	scanf(" %d", &opcionSeleccionada);
 
 	while (opcionSeleccionada != 1 && opcionSeleccionada != 2) {
 
@@ -33,9 +34,13 @@ char solicitarRutaArchivoHostsSistema(char *rutaArchivo) {
 		solicitarRutaArchivo(rutaArchivo);
 	}
 	
-	return &rutaArchivo;
+	return rutaArchivo;
 }
 
+/*Al pasarle una ruta hacia el archivo y el modo de apertura devolvera un puntero tipo FILE
+para manipular el stream de datos. Si se da algún error de con la ruta proporcionada para 
+la apertura del archivo devuelve el fallo por pantalla y solicita una nueva ruta
+*/
 FILE *inicializarPunteroArchivo(char *rutaArchivo, char *modo)
 {
 	FILE *archivoProcesado;
@@ -58,6 +63,45 @@ FILE *inicializarPunteroArchivo(char *rutaArchivo, char *modo)
 	}
 }
 
+/*Devueleve true si el primer caracter de la línea pasada es igual a uno de los simbolos utilizados para 
+comentar lineas */
+bool esLineaComentario(char *linea) {
+	
+	return linea[0] == '#' || linea[0] == '/' || linea[0] == '@' || linea[0] == ' ' || linea[0] == '\n';
+}
+
+//Devuelve true si ha podido obtener los dos primeros strings de la línea procesada. 
+bool obtenerStringsIpUrl(char *stringIP, char *stringURL, char *contenidoLinea) {
+
+	//Utilizaremos strtok() para separar el string recogiendo los elementos que estan delimitados por espacios.
+	char *contenidoDelimitadoPorEspacios = strtok(contenidoLinea, " ");
+	char *stringsObtenidos[2] = {NULL};
+	int posicionString = 0;
+	
+	//Si las hay, trataremos las dos primeras cadenas.
+	while (contenidoDelimitadoPorEspacios != NULL && posicionString < 2) {
+
+		stringsObtenidos[posicionString] = contenidoDelimitadoPorEspacios;
+		contenidoDelimitadoPorEspacios = strtok(NULL, " ");
+		posicionString++;
+	}
+
+	//Si no se ha podido obtener una cadena devolvemos false y finalizamos la función.
+	if (stringsObtenidos[0] == NULL || stringsObtenidos[1] == NULL) {
+
+		return false;
+
+	}
+
+	//El proceso ha sido correcto, copiamos los strings obtenidos en los respectivos punteros.
+	strcpy(stringIP, stringsObtenidos[0]);
+	strcpy(stringURL, stringsObtenidos[1]);
+		
+	return true;
+
+}
+
+//Al pasarle un puntero tipo FILE devolvera su contenido por pantalla.
 void mostrarContenidoArchivo(FILE *archivoA) {
 	
 	//Declaramos la variable para albergar el resultado de cada lectura del flujo. 
@@ -79,6 +123,54 @@ void mostrarContenidoArchivo(FILE *archivoA) {
 	//Devolvemos el apuntador al principio del archivo.
 	rewind(archivoA);
 	
+}
+
+//Al pasarle un archivo tipo FILE obtendrá los pares IP-URL y los almacenada en la structura que se le proporcione.
+void obtenerParesIpUrl(FILE *archivoHostsProporcionado, struct parIpUrl *punteroParesIpURL) {
+	
+	int  numLinea = 1, numParesObtenidos = 0;
+//Hasta que no alcanzemos el EOF del archivo de origen iremos tratando línea a línea.
+	while (!feof(archivoHostsProporcionado)) {
+
+		//El contenedor de la línea tratada y máximo de caracteres que permitiremos
+		char bufferLinea[MAX_CHAR_CADENA];
+
+		//Obtenemos el contenido de la línea
+		fgets(bufferLinea, 150, archivoHostsProporcionado);
+		//Facilitamos la salida para usuario mostrando qué hace la aplicación
+		printf("\nLINEA NUM %02d. CARACTER DETECTADO POSICION 1: %c.", numLinea, bufferLinea[0] == '\n'? ' ': bufferLinea[0]);
+
+		//Solo trataremos la línea si esta no es un comentario.
+		if (!esLineaComentario(bufferLinea)) {
+
+			//Contenedores para la IP y URL			
+			char stringIP[15], stringURL[20];
+					
+
+			if (!obtenerStringsIpUrl(stringIP, stringURL, bufferLinea)) {
+
+				infoUsrErrorObtenerStrings(numLinea);
+				break;
+
+			}
+					   				
+				strcpy(punteroParesIpURL->ip, stringIP);
+				strcpy(punteroParesIpURL->url, stringURL);
+
+				//
+				punteroParesIpURL->numParesEncontrados = numParesObtenidos;
+				//Actualizamos el puntero para dirigirlo al siguiente elemento del array
+				punteroParesIpURL++;
+
+			printf("\n\nIP == %s\n", stringIP);
+			printf("URL == %s\n", stringURL);
+			numParesObtenidos++;
+		}
+		else {
+			printf("ESTA LINEA ES UN COMENTARIO: NO SE PROCESA");
+		}
+		numLinea++;
+	}
 }
 
 void guardarComoArchivo() {

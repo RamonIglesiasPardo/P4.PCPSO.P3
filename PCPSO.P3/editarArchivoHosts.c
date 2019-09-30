@@ -4,46 +4,33 @@ void editarArchivoHosts() {
 	//Declaramos los puntero tipo FILE para los archivos que procesaremos.
 	FILE *archivoHostsSistema, *archivoHostsProporcionado, *archivoTemp;
 		
-	//Solicitamos al usuario que introduzca la ruta del archivo Hosts del Sistema.
-	solicitarRutaArchivoHostsSistema(rutaArchivoHostsSistema);
-	//Abrimos el acceso al archivo Hosts del SO y mostramos su contenido.
+	//Solicitamos al usuario que introduzca la ruta del archivo Hosts del Sistema, inicializamos el puntero tipo FILE y mostramos contenidos..
+	strcpy(rutaArchivoHostsSistema, RUTA_POR_DEFECTO_HOST_SISTEMA);
+	//solicitarRutaArchivoHostsSistema(rutaArchivoHostsSistema);
 	archivoHostsSistema = inicializarPunteroArchivo(rutaArchivoHostsSistema, "r+");
 	mostrarContenidoArchivo(archivoHostsSistema);
 
-	//Solicitamos al usuario que introduzca la ruta del archivo Hosts del Sistema.
-	//solicitarRutaArchivo(rutaArchivoHostsProporcionado);
+	//Solicitamos al usuario que introduzca la ruta del archivo Hosts e inicializamos el puntero FILE.
 	strcpy(rutaArchivoHostsProporcionado, "../PCPSO.P3/hostsProporcionado.txt");
-	//Abrimos el acceso al archivo Host proporcionado.
+	//solicitarRutaArchivo(rutaArchivoHostsProporcionado);
 	archivoHostsProporcionado = inicializarPunteroArchivo(rutaArchivoHostsProporcionado, "rt");
 
-	//Checkear si los pares proporcionados estan presentes en el hosts del SO. Si no lo estan escribirlos en un archivo temporal. 
+	//Creamos el archivo temporal e incializamos el puntero FILE.
 	printf("\nCREANDO ARCHIVO TEMPORAL\n");
 	strcpy(rutaArchivoTemp, RUTA_POR_DEFECTO_HOST_TEMPORAL);
 	archivoTemp = inicializarPunteroArchivo(rutaArchivoTemp, "w");
 
-	char bufferLinea[150];
-	char a1[100], a2[100], a3[100], a4[100];
-	char parBuscado[100] = "nodebeSalir";
-	int  n=1, ip[4]={0}, a,b,c,d;
+	//Declaración de las estructuras que contendran los pares IP-URL. Permitirimos hasta 50 pares por struct.
+	struct parIpUrl paresIpUrlHostsPropuesto[50];
+	struct parIpUrl paresIpUrlHostsSistema[50];
 	
-	
-	//Hasta que no alcanzemos el EOF del archivo de origen iremos obteniendo cada línea.
-	while (!feof(archivoHostsProporcionado)) {
-		
-		fgets(bufferLinea, 150, archivoHostsProporcionado);
-		
-		
-		printf("\nLINEA NUM %d", n);
-		printf("\nCHAR EN POSICION 1: %c", bufferLinea[0]);
-		
-		//strstr(bufferMaxLongitudLinea, "#") == NULL;
-	
-		//strstr(bufferLinea[0], "#") == NULL
+	//Empezamos a procesar los pares del Hosts propuesto y despues del Hosts del SO
+	printf("\nANALIZANDO PARES IP-URL PROPUESTOS EN EL ARCHIVO HOST INTRODUCIDO: \"%s\"\n", rutaArchivoHostsProporcionado);
+	obtenerParesIpUrl(archivoHostsProporcionado, paresIpUrlHostsPropuesto);
+	printf("\nANALIZANDO PARES IP-URL EXISTENTES EN EL ARCHIVO HOST DEL SO: \"%s\"\n", rutaArchivoHostsProporcionado);
+	obtenerParesIpUrl(archivoHostsSistema, paresIpUrlHostsSistema);
 
-		if (bufferLinea[0] != '#')  {
-
-
-			printf("\n CONTENIDO TOTAL LINEA ----> %s\n", bufferLinea); //printing each token
+	//parNuevoCopiarEnArchivoTmp(paresIpUrlHostsPropuesto, paresIpUrlHostsSistema, archivoTemp);
 
 
 
@@ -51,61 +38,22 @@ void editarArchivoHosts() {
 
 
 
-			char *contenidoDelimitadoPorPuntos = strtok(bufferLinea, ".");
-			int m = 1;
-			while (contenidoDelimitadoPorPuntos != NULL) {
-			
-				printf("-------------------> ELEMENTO %d == %s\n", m, contenidoDelimitadoPorPuntos); //printing each token
-				contenidoDelimitadoPorPuntos = strtok(NULL, ".");
-				m++;
-			}
 
+	int i=0;
+	while (i <= paresIpUrlHostsPropuesto[i].numParesEncontrados) {
 
+		printf("\n\nIP: %s\n", paresIpUrlHostsPropuesto[i].ip);
+		printf("URL: %s\n", paresIpUrlHostsPropuesto[i].url);
 
-				
-
-
-			//char* loquesale, *delim = "%s.%s.%s.%s";
-			//loquesale = strtok(bufferMaxLongitudLinea, delim);
-			////fscanf(archivoHostsProporcionado, "%s %s", a1, a2);
-			//printf("\nCADENA NUM %d. STRING LEIDO ---> %s", n, loquesale);
-			////fgets(bufferMaxLongitudLinea, 150, archivoHostsProporcionado);
-		}
-		n++;
-
-		//fscanf(archivoHostsProporcionado, "%d %d %d %d", &ip[0], &ip[1], &ip[2], &ip[3]);
-		//printf("\nCADENA NUM %d. STRING LEIDO ---> %d %d %d %d", n, ip[0], ip[1], ip[2], ip[3]);
-		
-
-		//fscanf(archivoHostsProporcionado, "%s %s %s %s", a1, a2, a3, a4);
-		//printf("\nCADENA NUM %d. STRING LEIDO ---> %s %s %s %s", n, a1, a2, a3, a4);
-		
-
-
-
-	
-
-
-
-		//fscanf(archivoHostsProporcionado, "%d.%d.%d.%d", &a, &b, &c, &d);
-		//Facilitamos una salida por pantalla más informativa. 
-		//printf("\nIP %d.%d.%d.%d --->", a, b, c, d);
-
-		
-		//Vamos comparando los ene strings obtenidos del archivo analizado con el string buscado por el usuario.
-		//if (!strcmp(parBuscado, a1)) {
-
-			//printf(" <-------- COINCIDE!!!");
-			
-			
-		//}
+		i++;
 
 	}
 
 
+
 	getch();
 
-	//Inicializamos y validamos el puntero FILE. 
+
 	
 
 

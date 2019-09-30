@@ -1,6 +1,7 @@
 #include <stdio.h>//Necesaria para varias funciones que utilizaremos como scanf, fscanf, printf... y definiciones de tipo como FILE...
 #include <errno.h>//Necesaria para contar con la definición de "errno" (también se puede utilizar stdlib.h)
 #include <string.h>//Necesaria para contar con la función strcmp()
+#include <stdbool.h>//Necesaria para contar con booleanos.
 #include "predeclaracionFunciones.h"//Predeclaración de las funciones y acciones creadas para el programa 
 #include "editarArchivoHosts.c"//Funcionalidad principal del programa
 #include "infoMostradaUsuario.c"//Mensajes mostrados al usuario
