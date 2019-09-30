@@ -19,7 +19,7 @@
 #	127.0.0.1       localhost
 #	::1             localhost
 #
-192.168.168.55 pruebas.com
+192.168.168.55 amazon.com
 192.168.168.56 maspruebas.com
 a
 b

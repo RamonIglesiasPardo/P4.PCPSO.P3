@@ -1,9 +1,10 @@
 #include <stdio.h>//Necesaria para varias funciones que utilizaremos como scanf, fscanf, printf... y definiciones de tipo como FILE...
 #include <errno.h>//Necesaria para contar con la definición de "errno" (también se puede utilizar stdlib.h)
 #include <string.h>//Necesaria para contar con la función strcmp()
-#include "predeclaracionFunciones.h"//Predeclaración de las funciones creadas para el programa 
-#include "presentacionInformacionUsuario.c"//Propiamente las funciones creadas
-#include "tratamientoDatos.c"//Propiamente las funciones creadas
+#include "predeclaracionFunciones.h"//Predeclaración de las funciones y acciones creadas para el programa 
+#include "editarArchivoHosts.c"//Funcionalidad principal del programa
+#include "infoMostradaUsuario.c"//Mensajes mostrados al usuario
+#include "tratamientoDatos.c"//Propiamente las funciones creadas para manipular los datos de la aplicación
 
 int main()
 {
@@ -13,7 +14,7 @@ int main()
 	//Con este bucle "do while" volveremos al menu inicial hasta que no sea introducido el caracter de fuga. 
 	do {
 		//Mostramos las opciones del programa y solicitamos introduzca una opción al usuario.
-		mostrarMenuInicial();
+		infoUsrMenuInicial();
 		opcionSeleccionada = 1;
 		//scanf("%d", &opcionSeleccionada);
 
@@ -31,9 +32,7 @@ int main()
 			break;
 		}
 
-		printf("\n\n#######################################################################\n");
-		printf("######### PULSE CUALQUIER TECLA PARA VOLVER AL MENU PRINCIPAL #########\n");
-		printf("#######################################################################");
+		infoUsrFinalPrograma();
 
 		getch(); // PAUSA
 		system("cls"); //Limpiamos la pantalla (aunque para mejorar la portabilidad sería deseable no usarlo)
