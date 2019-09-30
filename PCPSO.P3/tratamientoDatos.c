@@ -1,15 +1,3 @@
-void mostrarMenuInicial() {
-
-	printf("#######################################################################\n");
-	printf("############################ MENU INICIAL #############################\n");
-	printf("#######################################################################\n\n");
-	printf("Por favor, seleccione una de las siguientes opciones:\n\n");
-	printf("1) Edicion archivo Hosts.\n");
-	printf("0) Salir\n\n");
-	printf("Opcion seleccionada: ");
-
-}
-
 char solicitarRutaArchivo(char *rutaArchivo) {
 
 	printf("\nPor favor, introduzca la ruta hacia el archivo:\n");
@@ -31,7 +19,7 @@ char solicitarRutaArchivoHostsSistema(char *rutaArchivo) {
 	printf("2) Indicar ruta manualmente.\n");
 	printf("\nOpcion seleccionada: ");
 	//Quizá aquí sería mejor usar fgets. Podriamos controlar la asignación de memoria y permitiria el uso de espacios en la dirección introducida.
-	scanf(" %d", &opcionSeleccionada);
+	opcionSeleccionada = 1; // scanf(" %d", &opcionSeleccionada);
 
 	while (opcionSeleccionada != 1 && opcionSeleccionada != 2) {
 
@@ -92,7 +80,8 @@ void editarArchivoHosts() {
 	mostrarContenidoArchivo(archivoHostsSistema);
 
 	//Solicitamos al usuario que introduzca la ruta del archivo Hosts del Sistema.
-	solicitarRutaArchivo(rutaArchivoHostsProporcionado);
+	//solicitarRutaArchivo(rutaArchivoHostsProporcionado);
+	strcpy(rutaArchivoHostsProporcionado, "../PCPSO.P3/hostsProporcionado.txt");
 	//Abrimos el acceso al archivo Host proporcionado.
 	archivoHostsProporcionado = inicializarPunteroArchivo(rutaArchivoHostsProporcionado, "rt");
 
@@ -101,6 +90,86 @@ void editarArchivoHosts() {
 	strcpy(rutaArchivoTemp, RUTA_POR_DEFECTO_HOST_TEMPORAL);
 	archivoTemp = inicializarPunteroArchivo(rutaArchivoTemp, "w");
 
+	char bufferLinea[150];
+	char a1[100], a2[100], a3[100], a4[100];
+	char parBuscado[100] = "nodebeSalir";
+	int  n=1, ip[4]={0}, a,b,c,d;
+	
+	
+	//Hasta que no alcanzemos el EOF del archivo de origen iremos obteniendo cada línea.
+	while (!feof(archivoHostsProporcionado)) {
+		
+		fgets(bufferLinea, 150, archivoHostsProporcionado);
+		
+		
+		printf("\nLINEA NUM %d", n);
+		printf("\nCHAR EN POSICION 1: %c", bufferLinea[0]);
+		
+		//strstr(bufferMaxLongitudLinea, "#") == NULL;
+	
+		//strstr(bufferLinea[0], "#") == NULL
+
+		if (bufferLinea[0] != '#')  {
+
+
+			printf("\n CONTENIDO TOTAL LINEA ----> %s\n", bufferLinea); //printing each token
+
+
+
+
+
+
+
+			char *contenidoDelimitadoPorPuntos = strtok(bufferLinea, ".");
+			int m = 1;
+			while (contenidoDelimitadoPorPuntos != NULL) {
+			
+				printf("-------------------> ELEMENTO %d == %s\n", m, contenidoDelimitadoPorPuntos); //printing each token
+				contenidoDelimitadoPorPuntos = strtok(NULL, ".");
+				m++;
+			}
+
+
+
+				
+
+
+			//char* loquesale, *delim = "%s.%s.%s.%s";
+			//loquesale = strtok(bufferMaxLongitudLinea, delim);
+			////fscanf(archivoHostsProporcionado, "%s %s", a1, a2);
+			//printf("\nCADENA NUM %d. STRING LEIDO ---> %s", n, loquesale);
+			////fgets(bufferMaxLongitudLinea, 150, archivoHostsProporcionado);
+		}
+		n++;
+
+		//fscanf(archivoHostsProporcionado, "%d %d %d %d", &ip[0], &ip[1], &ip[2], &ip[3]);
+		//printf("\nCADENA NUM %d. STRING LEIDO ---> %d %d %d %d", n, ip[0], ip[1], ip[2], ip[3]);
+		
+
+		//fscanf(archivoHostsProporcionado, "%s %s %s %s", a1, a2, a3, a4);
+		//printf("\nCADENA NUM %d. STRING LEIDO ---> %s %s %s %s", n, a1, a2, a3, a4);
+		
+
+
+
+	
+
+
+
+		//fscanf(archivoHostsProporcionado, "%d.%d.%d.%d", &a, &b, &c, &d);
+		//Facilitamos una salida por pantalla más informativa. 
+		//printf("\nIP %d.%d.%d.%d --->", a, b, c, d);
+
+		
+		//Vamos comparando los ene strings obtenidos del archivo analizado con el string buscado por el usuario.
+		//if (!strcmp(parBuscado, a1)) {
+
+			//printf(" <-------- COINCIDE!!!");
+			
+			
+		//}
+
+	}
 
 
 	getch();

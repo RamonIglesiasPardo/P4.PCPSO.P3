@@ -1,8 +1,9 @@
 #include <stdio.h>//Necesaria para varias funciones que utilizaremos como scanf, fscanf, printf... y definiciones de tipo como FILE...
 #include <errno.h>//Necesaria para contar con la definición de "errno" (también se puede utilizar stdlib.h)
 #include <string.h>//Necesaria para contar con la función strcmp()
-#include "miLibreria.h"//Predeclaración de las funciones creadas para el programa 
-#include "miLibreria.c"//Propiamente las funciones creadas
+#include "predeclaracionFunciones.h"//Predeclaración de las funciones creadas para el programa 
+#include "presentacionInformacionUsuario.c"//Propiamente las funciones creadas
+#include "tratamientoDatos.c"//Propiamente las funciones creadas
 
 int main()
 {
@@ -13,7 +14,8 @@ int main()
 	do {
 		//Mostramos las opciones del programa y solicitamos introduzca una opción al usuario.
 		mostrarMenuInicial();
-		scanf("%d", &opcionSeleccionada);
+		opcionSeleccionada = 1;
+		//scanf("%d", &opcionSeleccionada);
 
 		switch (opcionSeleccionada)
 		{
