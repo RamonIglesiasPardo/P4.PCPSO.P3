@@ -140,7 +140,7 @@ void obtenerParesIpUrl(FILE *archivoHostsProporcionado, struct parIpUrl *puntero
 	while (!feof(archivoHostsProporcionado)) {
 
 		//El contenedor de la línea tratada y máximo de caracteres que permitiremos
-		char bufferLinea[MAX_CHAR_CADENA];
+		char bufferLinea[MAX_CHAR_CADENA] = {' '};
 
 		//Obtenemos el contenido de la línea
 		fgets(bufferLinea, 150, archivoHostsProporcionado);
@@ -209,6 +209,7 @@ void parNuevoCopiarEnArchivoTmp(struct parIpUrl *paresIpUrlHostsPropuesto, struc
 			fputs(" ", archivoTemp);
 			fputs(paresIpUrlHostsPropuesto->url, archivoTemp);
 			fputs("\n", archivoTemp);
+
 			bool hayCoincidencia = false;
 
 		}

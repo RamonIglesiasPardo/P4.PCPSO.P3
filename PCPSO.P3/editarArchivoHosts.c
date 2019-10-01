@@ -21,7 +21,7 @@ void editarArchivoHosts() {
 	archivoTemp = inicializarPunteroArchivo(rutaArchivoTemp, "w");
 
 	//Declaración de las estructuras que contendran los pares IP-URL. Permitirimos hasta 50 pares por struct.
-	struct parIpUrl paresIpUrlHostsPropuesto[50] = { NULL };
+	struct parIpUrl paresIpUrlHostsPropuesto[50] = { NULL};
 	struct parIpUrl paresIpUrlHostsSistema[50] = { NULL };
 	
 	//Empezamos a procesar los pares del Hosts propuesto y despues del Hosts del SO
