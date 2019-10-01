@@ -1,26 +1,19 @@
 void editarArchivoHosts() {
 	//Declaramos las variables que albergarán la dirección de los archivos a procesar.
-	char rutaArchivoHostsSistema[MAX_CHAR_RUTA_ARCHIVO], rutaArchivoHostsProporcionado[MAX_CHAR_RUTA_ARCHIVO], rutaArchivoTemp[MAX_CHAR_RUTA_ARCHIVO];
+	char rutaArchivoHostsSistema[MAX_CHAR_RUTA_ARCHIVO], rutaArchivoHostsProporcionado[MAX_CHAR_RUTA_ARCHIVO];
 	//Declaramos los puntero tipo FILE para los archivos que procesaremos.
-	FILE *archivoHostsSistema, *archivoHostsProporcionado, *archivoTemp;
+	FILE *archivoHostsSistema, *archivoHostsProporcionado;
 		
 	//Solicitamos al usuario que introduzca la ruta del archivo Hosts del Sistema, inicializamos el puntero tipo FILE y mostramos contenidos..
-	strcpy(rutaArchivoHostsSistema, RUTA_POR_DEFECTO_HOST_SISTEMA);
-	//solicitarRutaArchivoHostsSistema(rutaArchivoHostsSistema);
+	solicitarRutaArchivoHostsSistema(rutaArchivoHostsSistema);
 	archivoHostsSistema = inicializarPunteroArchivo(rutaArchivoHostsSistema, "r+");
 	mostrarContenidoArchivo(archivoHostsSistema);
 
 	//Solicitamos al usuario que introduzca la ruta del archivo Hosts e inicializamos el puntero FILE.
-	strcpy(rutaArchivoHostsProporcionado, "../PCPSO.P3/hostsProporcionado.txt");
-	//solicitarRutaArchivo(rutaArchivoHostsProporcionado);
+	solicitarRutaArchivo(rutaArchivoHostsProporcionado);
 	archivoHostsProporcionado = inicializarPunteroArchivo(rutaArchivoHostsProporcionado, "rt");
 
-	//Creamos el archivo temporal e incializamos el puntero FILE.
-	printf("\nCREANDO ARCHIVO TEMPORAL\n");
-	strcpy(rutaArchivoTemp, RUTA_POR_DEFECTO_HOST_TEMPORAL);
-	archivoTemp = inicializarPunteroArchivo(rutaArchivoTemp, "w");
-
-	//Declaración de las estructuras que contendran los pares IP-URL. Permitirimos hasta 50 pares por struct.
+	//Declaración e inicializamos las estructuras que contendran los pares IP-URL. Permitirimos hasta 50 pares por struct.
 	struct parIpUrl paresIpUrlHostsPropuesto[50] = { NULL};
 	struct parIpUrl paresIpUrlHostsSistema[50] = { NULL };
 	
@@ -30,33 +23,19 @@ void editarArchivoHosts() {
 	printf("\n\nANALIZANDO PARES IP-URL EXISTENTES EN EL ARCHIVO HOST DEL SO: \"%s\"\n", rutaArchivoHostsSistema);
 	obtenerParesIpUrl(archivoHostsSistema, paresIpUrlHostsSistema);
 
-	parNuevoCopiarEnArchivoTmp(paresIpUrlHostsPropuesto, paresIpUrlHostsSistema, archivoTemp);
-
-	fclose(archivoTemp);
-
-
-
-	/*int i=0;
-	while (i <= paresIpUrlHostsPropuesto[i].numParesEncontrados) {
-
-		printf("\n\nIP: %s\n", paresIpUrlHostsPropuesto[i].ip);
-		printf("URL: %s\n", paresIpUrlHostsPropuesto[i].url);
-
-		i++;
-
-	}*/
-
-
-
-	getch();
-
-
+	//Con esta función chequeamos si los pares propuestos ya existen en el Hosts del SO. Si son nuevos los escribimos en el archivo temporal.
+	parNuevoCopiarEnArchivoTmp(paresIpUrlHostsPropuesto, paresIpUrlHostsSistema);
 	
+	//Copiamos los datos del archivo temporal al Hosts del SO y eliminamo archivo.
+	anadirDatosHostsSO(archivoHostsSistema);
 
+	//Mostramos contenidos del archivo Hosts resultante del SO.
+	mostrarContenidoArchivo(archivoHostsSistema);
 
-	//Hemos llegado al EOF. Cerramos el archivo para liberar recursos
-
+	//Cerramos los archivos para liberar recursos.
 	fclose(archivoHostsSistema);
+	fclose(archivoHostsProporcionado);
 
+	printf("Fin del programa...");
 
 }

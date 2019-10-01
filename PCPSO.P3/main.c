@@ -16,8 +16,8 @@ int main()
 	do {
 		//Mostramos las opciones del programa y solicitamos introduzca una opción al usuario.
 		infoUsrMenuInicial();
-		opcionSeleccionada = 1;
-		//scanf("%d", &opcionSeleccionada);
+		opcionSeleccionada;
+		scanf("%d", &opcionSeleccionada);
 
 		switch (opcionSeleccionada)
 		{

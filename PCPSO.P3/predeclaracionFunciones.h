@@ -2,8 +2,8 @@
 #define MAX_CHAR_CADENA 150
 #define TAM_IP 16
 #define TAM_URL 50
-#define RUTA_POR_DEFECTO_HOST_SISTEMA "../PCPSO.P3/hosts" //"%windir%/\system32/\drivers/\etc/\hosts"    C:\\Windows\\System32\\drivers\\etc\\hosts      %windir%\system32\drivers\etc\hosts    ../PCPSO.P3/hostsProporcionado.txt
-#define RUTA_POR_DEFECTO_HOST_TEMPORAL "../PCPSO.P3/hosts_tmp"
+#define RUTA_POR_DEFECTO_HOST_SISTEMA "C:/Windows/system32/drivers/etc/hosts"  
+#define RUTA_POR_DEFECTO_HOST_TEMPORAL "hosts_tmp"
 
 //Funciones principales del programa
 void editarArchivoHosts();
@@ -16,9 +16,8 @@ bool esLineaComentario(char *linea);
 bool obtenerStringsIpUrl(char *stringIP, char *stringURL, char *contenidoLinea);
 void obtenerParesIpUrl(FILE *archivoHostsProporcionado, struct parIpUrl *);
 void mostrarContenidoArchivo(FILE *archivoA);
-void parNuevoCopiarEnArchivoTmp(struct parIpUrl *paresIpUrlHostsPropuesto, struct parIpUrl *paresIpUrlHostsSistema, FILE *archivoTemp);
-void guardarComoArchivo();
-void buscarCadenaCaracteres();
+void parNuevoCopiarEnArchivoTmp(struct parIpUrl *paresIpUrlHostsPropuesto, struct parIpUrl *paresIpUrlHostsSistema);
+void anadirDatosHostsSO(FILE *archivoHostsSistema);
 
 //Funciones dedicadas a la presentación de información al usuario
 void infoUsrMenuInicial();

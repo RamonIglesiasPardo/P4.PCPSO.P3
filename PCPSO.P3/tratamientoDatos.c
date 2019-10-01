@@ -183,8 +183,20 @@ void obtenerParesIpUrl(FILE *archivoHostsProporcionado, struct parIpUrl *puntero
 }
 
 //Con esta función chequeamos si los pares propuestos ya existen en el Hosts del SO. Si son nuevos los escribimos en el archivo temporal
-void parNuevoCopiarEnArchivoTmp(struct parIpUrl *paresIpUrlHostsPropuesto, struct parIpUrl *paresIpUrlHostsSistema, FILE *archivoTemp) {
+void parNuevoCopiarEnArchivoTmp(struct parIpUrl *paresIpUrlHostsPropuesto, struct parIpUrl *paresIpUrlHostsSistema) {
+	
+	printf("\n\nINICIANDO COPIA DE PARES NUEVOS HACIA ARCHIVO TEMPORAL\n");
 
+	//Declaramos la variable que albergará la dirección del archivo temporal.
+	char rutaArchivoTemp[MAX_CHAR_RUTA_ARCHIVO];
+	//Declaramos el puntero tipo FILE para el archivo que procesaremos.
+	FILE *archivoTemp;
+
+	//Creamos el archivo temporal e incializamos su puntero FILE.
+	printf("\nCREANDO ARCHIVO TEMPORAL\n");
+	strcpy(rutaArchivoTemp, RUTA_POR_DEFECTO_HOST_TEMPORAL);
+	archivoTemp = inicializarPunteroArchivo(rutaArchivoTemp, "w");
+	
 	struct parIpUrl *hostsSistemaBuffer;
 	memcpy(&hostsSistemaBuffer, &paresIpUrlHostsSistema, sizeof paresIpUrlHostsSistema);
 
@@ -205,10 +217,11 @@ void parNuevoCopiarEnArchivoTmp(struct parIpUrl *paresIpUrlHostsPropuesto, struc
 
 		if (!hayCoincidencia) {
 
+			fputs("\n", archivoTemp);
 			fputs(paresIpUrlHostsPropuesto->ip, archivoTemp);
 			fputs(" ", archivoTemp);
 			fputs(paresIpUrlHostsPropuesto->url, archivoTemp);
-			fputs("\n", archivoTemp);
+
 
 			bool hayCoincidencia = false;
 
@@ -217,123 +230,60 @@ void parNuevoCopiarEnArchivoTmp(struct parIpUrl *paresIpUrlHostsPropuesto, struc
 		paresIpUrlHostsPropuesto++;
 		memcpy(&paresIpUrlHostsSistema, &hostsSistemaBuffer, sizeof hostsSistemaBuffer);
 	}
+	int estado = fclose(archivoTemp);
 
-}
-
-void guardarComoArchivo() {
-	
-	//Declaramos el contenedor para albergar el dirección de los archivo a procesar.
-	char rutaArchivoOrigen[MAX_CHAR_RUTA_ARCHIVO], rutaArchivoDestino[MAX_CHAR_RUTA_ARCHIVO];
-	//Declaramos los punteros de tipo FILE para los archivos que procesaremos.
-	FILE *archivoOrigen, *archivoDestino;
-
-	printf("\n#######################################################################\n");
-	printf("####################### DETALLES ARCHIVO ORIGEN #######################\n");
-	printf("#######################################################################\n");
-	//Solicitamos al usuario que introduzca la ruta del archivo de origen.
-	solicitarRutaArchivo(rutaArchivoOrigen);
-	//Inicializamos y validamos el puntero FILE. 
-	archivoOrigen = inicializarPunteroArchivo(&rutaArchivoOrigen, "rt");
-
-	printf("\n#######################################################################\n");
-	printf("####################### DETALLES ARCHIVO DESTINO ######################\n");
-	printf("#######################################################################\n");
-	//Solicitamos al usuario que introduzca la ruta del archivo de destino.
-	solicitarRutaArchivo(rutaArchivoDestino);
-	//Inicializamos y validamos el puntero FILE. 
-	archivoDestino = inicializarPunteroArchivo(&rutaArchivoDestino, "w");
-		
-	//Declaramos el contenedor para albergar el resultado de cada lectura. 
-	char caracter;
-	
-	//Obtenemos ya el primer caracter para evitar problemas a la hora de copiar el último en el archivo de destino.
-	caracter = fgetc(archivoOrigen);
-
-	//Hasta que no alcanzemos el EOF del archivo de origen iremos copiando todo caracter que encontremos en el archivo de destino.
-	while (!feof(archivoOrigen)) {
-		
-		//Escritura caracter a caracter en el flujo apuntado por "archivoDestino"
-		fputc(caracter, archivoDestino);
-		//Lectura caracter a caracter del flujo apuntado por "archivoOrigen"
-		caracter = fgetc(archivoOrigen);
-			
+	if (estado == 0)
+		printf("\nEXITO CERRANDO \"%s\"\n", rutaArchivoTemp);
+	else
+	{
+		printf("FALLO CERRANDO ARCHIVO TEMPORAL\n");
+		perror("ERROR: ");
 	}
 	
-	//Hemos llegado al EOF. Cerramos los archivos para liberar recursos.
-	fclose(archivoOrigen);
-	fclose(archivoDestino);
 
 }
 
-void buscarCadenaCaracteres() {
-	//Declaramos el contenedor para albergar el dirección de los archivo a procesar.
-	char rutaArchivo[MAX_CHAR_RUTA_ARCHIVO];
-	//Declaramos los punteros de tipo FILE para el archivo que procesaremos.
-	FILE *archivoARevisar;
-	//Declaramos las dos cadenas de caracteres que necesitaremos para la busqueda.
-	char stringBuscado[MAX_CHAR_CADENA];
-	char stringLeido[MAX_CHAR_CADENA];
+//Copiamos los datos del archivo temporal al Hosts del SO y eliminamo archivo.
+void anadirDatosHostsSO(FILE *archivoHostsSistema) {
 
-	printf("\n#######################################################################\n");
-	printf("####################### DETALLES ARCHIVO ORIGEN #######################\n");
-	printf("#######################################################################\n");
-	//Solicitamos al usuario que introduzca la ruta del archivo de origen.
-	solicitarRutaArchivo(rutaArchivo);
-	//Inicializamos y validamos el puntero FILE. 
-	archivoARevisar = inicializarPunteroArchivo(&rutaArchivo, "rt");
+	printf("\nINICIANDO VOLCADO DEL ARCHIVO TEMPORAL AL HOSTS DEL SO\n");
 
-	//Declaramos e inicializamos las dos variables que nos permitirán llevar la cuenta de cantidad de strings coincidentes y iteración. 
-	int n=1, m=0;
+	//Declaramos la variable que albergará la dirección del archivo temporal.
+	char rutaArchivoTemp[MAX_CHAR_RUTA_ARCHIVO];
+	//Declaramos el puntero tipo FILE para el archivo que procesaremos.
+	FILE *archivoTemp;
 
-	do {
+	//Creamos el archivo temporal e incializamos su puntero FILE.
+	printf("\nCREANDO ARCHIVO TEMPORAL\n");
+	strcpy(rutaArchivoTemp, RUTA_POR_DEFECTO_HOST_TEMPORAL);
+	archivoTemp = inicializarPunteroArchivo(rutaArchivoTemp, "r+");
 
-		printf("\n#######################################################################\n");
-		printf("################## CADENA DE CARACTERES A BUSCAR ######################\n");
-		printf("#######################################################################\n");
-		printf("\n(Introduzca \"SALIR\" para volver al menu princial)\nBuscar en archivo: ");
-		scanf("%s", stringBuscado);
-		//Forzamos salir de la función buscar cadena en archivo y volver al menu principal si el usuario introduce "SALIR"
-		if (!strcmp(stringBuscado, "SALIR")) {
-			break;
-		}
-		
-		//Hasta que no alcanzemos el EOF del archivo de origen iremos obteniendo toda cadena que tenga.
-		while (!feof(archivoARevisar)) {
-			
-			//Con fscanf() recorremos el flujo del archivoARevisar extrayendo toda cadena delimitada por espacios asignando secuencialmente esas cadenas a stringLeido.
-			fscanf(archivoARevisar, "%s.", stringLeido);
-			//Facilitamos una salida por pantalla más informativa. 
-			printf("\nCADENA NUM %d. STRING LEIDO ---> %s", n, stringLeido);
-			n++;
-			//Vamos comparando los ene strings obtenidos del archivo analizado con el string buscado por el usuario.
-			if (!strcmp(stringBuscado, stringLeido)) {
+	//Declaramos el contenedor para albergar el resultado de cada lectura. 
+	char caracter;
+	rewind(archivoTemp);
 
-				printf(" <-------- COINCIDE!!!");
-				//Aumentamos el contador de coincidencias dadas.
-				m++;
-			}
+	//Obtenemos ya el primer caracter para evitar problemas a la hora de copiar el último en el archivo de destino.
+	caracter = fgetc(archivoTemp);
 
-		}
-		//Informamos por pantalla en función de las coincidencias encontradas.
-		if (m == 0) {
+	//Hasta que no alcanzemos el EOF del archivo de origen iremos copiando todo caracter que encontremos en el archivo de destino.
+	while (!feof(archivoTemp)) {
 
-			printf("\n\nLa cadena \"%s\" NO esta presente en el fichero\n", stringBuscado);
+		//Escritura caracter a caracter en el flujo apuntado por "archivoDestino"
+		fputc(caracter, archivoHostsSistema);
+		//Lectura caracter a caracter del flujo apuntado por "archivoOrigen"
+		caracter = fgetc(archivoTemp);
 
-		}
-		else {
+	}
+	fclose(archivoTemp);
 
-			printf("\n\nLa cadena \"%s\" SI esta presente en %d ocasion/es\n", stringBuscado, m);
+	int estado = remove(rutaArchivoTemp);
 
-		}
-		//Reiniciamos los contadores por si hay que buscar más cadenas en el mismo archivo. 
-		n = 0;
-		m = 0;
-		//Volvemos al punto inicial del archivo por si hay que buscar más cadenas en el mismo archivo. 
-		rewind(archivoARevisar);
-
-	} while (strcmp(stringBuscado, "SALIR"));
-	
-	//Hemos llegado al EOF. Cerramos los archivos para liberar recursos.
-	fclose(archivoARevisar);
-
+	if (estado == 0)
+		printf("\nEXITO ELIMINANDO \"%s\"\n", rutaArchivoTemp);
+	else
+	{
+		printf("FALLO ELIMINANDO ARCHIVO TEMPORAL\n");
+		perror("ERROR: ");
+	}
+	rewind(archivoHostsSistema);
 }
