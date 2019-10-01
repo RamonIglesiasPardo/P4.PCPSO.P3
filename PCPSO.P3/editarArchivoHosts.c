@@ -21,25 +21,22 @@ void editarArchivoHosts() {
 	archivoTemp = inicializarPunteroArchivo(rutaArchivoTemp, "w");
 
 	//Declaración de las estructuras que contendran los pares IP-URL. Permitirimos hasta 50 pares por struct.
-	struct parIpUrl paresIpUrlHostsPropuesto[50];
-	struct parIpUrl paresIpUrlHostsSistema[50];
+	struct parIpUrl paresIpUrlHostsPropuesto[50] = { NULL };
+	struct parIpUrl paresIpUrlHostsSistema[50] = { NULL };
 	
 	//Empezamos a procesar los pares del Hosts propuesto y despues del Hosts del SO
-	printf("\nANALIZANDO PARES IP-URL PROPUESTOS EN EL ARCHIVO HOST INTRODUCIDO: \"%s\"\n", rutaArchivoHostsProporcionado);
+	printf("\n\nANALIZANDO PARES IP-URL PROPUESTOS EN EL ARCHIVO HOST INTRODUCIDO: \"%s\"\n", rutaArchivoHostsProporcionado);
 	obtenerParesIpUrl(archivoHostsProporcionado, paresIpUrlHostsPropuesto);
-	printf("\nANALIZANDO PARES IP-URL EXISTENTES EN EL ARCHIVO HOST DEL SO: \"%s\"\n", rutaArchivoHostsProporcionado);
+	printf("\n\nANALIZANDO PARES IP-URL EXISTENTES EN EL ARCHIVO HOST DEL SO: \"%s\"\n", rutaArchivoHostsSistema);
 	obtenerParesIpUrl(archivoHostsSistema, paresIpUrlHostsSistema);
 
-	//parNuevoCopiarEnArchivoTmp(paresIpUrlHostsPropuesto, paresIpUrlHostsSistema, archivoTemp);
+	parNuevoCopiarEnArchivoTmp(paresIpUrlHostsPropuesto, paresIpUrlHostsSistema, archivoTemp);
+
+	fclose(archivoTemp);
 
 
 
-
-
-
-
-
-	int i=0;
+	/*int i=0;
 	while (i <= paresIpUrlHostsPropuesto[i].numParesEncontrados) {
 
 		printf("\n\nIP: %s\n", paresIpUrlHostsPropuesto[i].ip);
@@ -47,7 +44,7 @@ void editarArchivoHosts() {
 
 		i++;
 
-	}
+	}*/
 
 
 
@@ -58,6 +55,8 @@ void editarArchivoHosts() {
 
 
 	//Hemos llegado al EOF. Cerramos el archivo para liberar recursos
+
 	fclose(archivoHostsSistema);
+
 
 }

@@ -78,7 +78,7 @@ bool obtenerStringsIpUrl(char *stringIP, char *stringURL, char *contenidoLinea) 
 	char *stringsObtenidos[2] = {NULL};
 	int posicionString = 0;
 	
-	//Si las hay, trataremos las dos primeras cadenas.
+	//Procesaremos los strings si este no es nulo y ademas nos limitaremos a las dos primeras cadenas.
 	while (contenidoDelimitadoPorEspacios != NULL && posicionString < 2) {
 
 		stringsObtenidos[posicionString] = contenidoDelimitadoPorEspacios;
@@ -86,10 +86,17 @@ bool obtenerStringsIpUrl(char *stringIP, char *stringURL, char *contenidoLinea) 
 		posicionString++;
 	}
 
-	//Si no se ha podido obtener una cadena devolvemos false y finalizamos la función.
+	//Si no se ha podido obtener una cadena devolvemos false y finalizamos la aplicación.
 	if (stringsObtenidos[0] == NULL || stringsObtenidos[1] == NULL) {
 
 		return false;
+
+	}
+
+	//Si el segundo string (con la URL) tiene saltos de línea los retiramos del string.
+	if (strstr(stringsObtenidos[1], "\n")) {
+
+		stringsObtenidos[1] = strtok(stringsObtenidos[1], "\n");
 
 	}
 
@@ -137,33 +144,35 @@ void obtenerParesIpUrl(FILE *archivoHostsProporcionado, struct parIpUrl *puntero
 
 		//Obtenemos el contenido de la línea
 		fgets(bufferLinea, 150, archivoHostsProporcionado);
-		//Facilitamos la salida para usuario mostrando qué hace la aplicación
+		/*Facilitamos la salida para usuario mostrando qué está haciendo la aplicación. (también evitamos que si el primer caracter es un
+		salto de línea lo imprima por pantal[descuadrando la salida...])*/ 
 		printf("\nLINEA NUM %02d. CARACTER DETECTADO POSICION 1: %c.", numLinea, bufferLinea[0] == '\n'? ' ': bufferLinea[0]);
 
 		//Solo trataremos la línea si esta no es un comentario.
 		if (!esLineaComentario(bufferLinea)) {
 
-			//Contenedores para la IP y URL			
-			char stringIP[15], stringURL[20];
+			//Contenedores para los pares IP y URL			
+			char stringIP[TAM_IP], stringURL[TAM_URL];
 					
-
+			/*Devuelve true si ha podido obtener los dos primeros strings de la línea. Ademas los asigna a los punteros correspondientes*/
 			if (!obtenerStringsIpUrl(stringIP, stringURL, bufferLinea)) {
 
 				infoUsrErrorObtenerStrings(numLinea);
 				break;
 
 			}
-					   				
-				strcpy(punteroParesIpURL->ip, stringIP);
-				strcpy(punteroParesIpURL->url, stringURL);
+			
+			//Todo ha ido bien obteniendo los strings. Los vamos introduciendo en la estructura.
+			strcpy(punteroParesIpURL->ip, stringIP);
+			strcpy(punteroParesIpURL->url, stringURL);
 
-				//
-				punteroParesIpURL->numParesEncontrados = numParesObtenidos;
-				//Actualizamos el puntero para dirigirlo al siguiente elemento del array
-				punteroParesIpURL++;
+			//
+			punteroParesIpURL->numParesEncontrados = numParesObtenidos;
+			//Saltamos a la siguiente dirección en memoria del puntero para dirigirlo al siguiente grupo de la estructura.
+			punteroParesIpURL++;
 
-			printf("\n\nIP == %s\n", stringIP);
-			printf("URL == %s\n", stringURL);
+			printf("\n\nIP DETECTADA == %s\n", stringIP);
+			printf("URL DETECTADA == %s\n", stringURL);
 			numParesObtenidos++;
 		}
 		else {
@@ -171,6 +180,43 @@ void obtenerParesIpUrl(FILE *archivoHostsProporcionado, struct parIpUrl *puntero
 		}
 		numLinea++;
 	}
+}
+
+//Con esta función chequeamos si los pares propuestos ya existen en el Hosts del SO. Si son nuevos los escribimos en el archivo temporal
+void parNuevoCopiarEnArchivoTmp(struct parIpUrl *paresIpUrlHostsPropuesto, struct parIpUrl *paresIpUrlHostsSistema, FILE *archivoTemp) {
+
+	struct parIpUrl *hostsSistemaBuffer;
+	memcpy(&hostsSistemaBuffer, &paresIpUrlHostsSistema, sizeof paresIpUrlHostsSistema);
+
+	for (int i = 0; i <= paresIpUrlHostsPropuesto->numParesEncontrados; i++) {
+		
+		bool hayCoincidencia = false;
+		
+		for (int j = 0; j <= paresIpUrlHostsSistema->numParesEncontrados; j++) {
+			
+			if (!strcmp(paresIpUrlHostsPropuesto->ip, paresIpUrlHostsSistema->ip) && !strcmp(paresIpUrlHostsPropuesto->url, paresIpUrlHostsSistema->url)) {
+				
+				hayCoincidencia = true;
+				break;
+				
+			}
+			paresIpUrlHostsSistema++;
+		}
+
+		if (!hayCoincidencia) {
+
+			fputs(paresIpUrlHostsPropuesto->ip, archivoTemp);
+			fputs(" ", archivoTemp);
+			fputs(paresIpUrlHostsPropuesto->url, archivoTemp);
+			fputs("\n", archivoTemp);
+			bool hayCoincidencia = false;
+
+		}
+
+		paresIpUrlHostsPropuesto++;
+		memcpy(&paresIpUrlHostsSistema, &hostsSistemaBuffer, sizeof hostsSistemaBuffer);
+	}
+
 }
 
 void guardarComoArchivo() {

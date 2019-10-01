@@ -55,7 +55,7 @@ void infoUsrFinMostrarContenidos() {
 void infoUsrErrorObtenerStrings(int numLinea) {
 
 	printf("ERROR DETECTADO OBTENIENDO PARES IP URL EN LA LINEA %d\n", numLinea);
-	printf("Revise que el archivo Hosts proporcionado contenga pares IP URL en formato:\n");
+	printf("Revise que el archivo contenga pares IP URL en el siguiente formato:\n");
 	printf("\"XXX.XXX.XXX.XXX url.dominio\"\n");
 	printf("OPERACION CANCELADA\n");
 
